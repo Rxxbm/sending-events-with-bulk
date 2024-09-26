@@ -11,8 +11,10 @@ export class AppController {
   }
 
   @Post('/pontos')
-  addPonto(@Request() req: PontoDTO) {
-    const { employeeId } = req;
+  addPonto(@Request() req) {
+    const body: PontoDTO = req.body;
+    const { employeeId } = body;
+    console.log('employeeId', employeeId);
     const date = new Date();
     const after_date = new Date(date.getTime() + 1000 * 60 * 60 * 8);
     return this.appService.save({
@@ -29,7 +31,5 @@ export class AppController {
 }
 
 export type PontoDTO = {
-  checkin: Date;
-  checkout: Date;
   employeeId: string;
 };
