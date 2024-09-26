@@ -2,4 +2,10 @@ FROM node:20-slim
 
 WORKDIR /home/node/app/sending-events-with-bulk
 
-CMD [ "tail", "-f", "/dev/null" ]
+COPY ./sending-events-with-bulk/package*.json ./
+
+RUN npm install
+
+COPY . .
+
+CMD [ "npm", "run", "start:dev" ]
