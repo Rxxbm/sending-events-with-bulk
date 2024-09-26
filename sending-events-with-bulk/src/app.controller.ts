@@ -5,6 +5,12 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+  @Get('/pontos/:employeeId')
+  findOne(@Request() req) {
+    const { employeeId } = req.params;
+    return this.appService.findByEmployeeId(employeeId);
+  }
+
   @Get('/pontos')
   findAll() {
     return this.appService.findAll();
