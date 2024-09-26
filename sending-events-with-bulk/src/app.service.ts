@@ -1,10 +1,41 @@
-import { Process, Processor } from '@nestjs/bull';
+import { InjectQueue, Process, Processor } from '@nestjs/bull';
 import { Injectable } from '@nestjs/common';
-import { Job } from 'bull';
+import { Job, Queue } from 'bull';
+import * as nodemailer from 'nodemailer';
+import { Transporter } from 'nodemailer';
+
+@Injectable()
+export class MailService {
+  private transporter: Transporter;
+
+  constructor() {
+    this.transporter = nodemailer.createTransport({
+      host: 'email',
+      port: 1025,
+    });
+  }
+
+  async sendMail({ to, subject, text, from }): Promise<void> {
+    try {
+      await this.transporter.sendMail({
+        from, // Sender address
+        to, // List of receivers
+        subject, // Subject line
+        text, // Plain text body
+      });
+
+      console.log(`E-mail enviado para ${to}`);
+    } catch (error) {
+      console.error('Erro ao enviar e-mail:', error);
+      throw new Error('Erro ao enviar e-mail');
+    }
+  }
+}
 
 @Injectable()
 export class AppService {
   private readonly events: Ponto[] = [];
+  constructor(@InjectQueue('pontos') private readonly pontosQueue: Queue) {}
 
   async findByEmployeeId(employeeId: string): Promise<Ponto> {
     return this.events.find((event) => event.employeeId === employeeId);
@@ -16,6 +47,12 @@ export class AppService {
       throw new Error('Ponto já registrado para o funcionário');
     }
     this.events.push(ponto);
+
+    await this.pontosQueue.add(
+      'verificarPonto',
+      { employeeId: ponto.employeeId },
+      { delay: 5000 },
+    );
   }
 
   async close(employeeId: string) {
@@ -39,11 +76,22 @@ export class AppService {
 @Injectable()
 @Processor('pontos')
 export class pontoProcessor {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    private readonly email: MailService,
+  ) {}
   @Process('verificarPonto')
   async verificarPonto(job: Job) {
     const { employeeId } = job.data;
-
+    const ponto = await this.appService.findByEmployeeId(employeeId);
+    if (ponto) {
+      await this.email.sendMail({
+        to: 'rubinho@email.com',
+        subject: 'Ponto aberto',
+        text: `O ponto do funcionário ${employeeId} ainda está aberto`,
+        from: 'funcionario@email.com',
+      });
+    }
     console.log('Job data', job.data);
   }
 }
