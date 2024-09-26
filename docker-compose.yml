@@ -5,3 +5,14 @@ services:
       - "3000:3000"
     volumes:
       - ./sending-events-with-bulk:/home/node/app/sending-events-with-bulk
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+
+  email:
+    image: "mailhog/mailhog"
+    ports:
+      - "8025:8025"
+      - "1025:1025"
