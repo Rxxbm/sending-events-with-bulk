@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Post, Request } from '@nestjs/common';
+import { Controller, Delete, Get, Patch, Post, Request } from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller()
@@ -17,22 +17,32 @@ export class AppController {
   }
 
   @Post('/pontos')
-  addPonto(@Request() req) {
+  async addPonto(@Request() req) {
     const body: PontoDTO = req.body;
     const { employeeId } = body;
-    console.log('employeeId', employeeId);
     const date = new Date();
-    const after_date = new Date(date.getTime() + 1000 * 60 * 60 * 8);
-    return this.appService.save({
-      checkin: date,
-      checkout: after_date,
-      employeeId,
-    });
+    const after_date = null;
+    try {
+      const result = await this.appService.save({
+        checkin: date,
+        checkout: after_date,
+        employeeId,
+      });
+      return result;
+    } catch (error) {
+      return { message: error.message };
+    }
   }
 
   @Delete('/pontos')
   clear() {
     return this.appService.clear();
+  }
+
+  @Patch('/pontos/:employeeId')
+  close(@Request() req) {
+    const { employeeId } = req.params;
+    return this.appService.close(employeeId);
   }
 }
 

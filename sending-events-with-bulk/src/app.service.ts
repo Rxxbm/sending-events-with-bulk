@@ -5,17 +5,34 @@ import { Job } from 'bull';
 @Injectable()
 export class AppService {
   private readonly events: Ponto[] = [];
+
+  async findByEmployeeId(employeeId: string): Promise<Ponto> {
+    return this.events.find((event) => event.employeeId === employeeId);
+  }
+
   async save(ponto: Ponto) {
+    const pontoAlreadyExists = await this.findByEmployeeId(ponto.employeeId);
+    if (pontoAlreadyExists) {
+      throw new Error('Ponto já registrado para o funcionário');
+    }
     this.events.push(ponto);
+  }
+
+  async close(employeeId: string) {
+    const ponto = this.events.find((event) => event.employeeId === employeeId);
+    if (ponto) {
+      ponto.checkout = new Date();
+    }
+    return {
+      message: `Ponto fechado para o funcionário ${employeeId}`,
+      ponto: ponto,
+    };
   }
   async findAll(): Promise<Ponto[]> {
     return this.events;
   }
   async clear() {
     this.events.length = 0;
-  }
-  async findByEmployeeId(employeeId: string): Promise<Ponto> {
-    return this.events.find((event) => event.employeeId === employeeId);
   }
 }
 
