@@ -1,10 +1,21 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { AppService, MailService, pontoProcessor } from './app.service';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
-  imports: [],
+  imports: [
+    BullModule.forRoot({
+      redis: {
+        host: 'redis',
+        port: 6379,
+      },
+    }),
+    BullModule.registerQueue({
+      name: 'pontos',
+    }),
+  ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, pontoProcessor, MailService],
 })
 export class AppModule {}
