@@ -20,6 +20,8 @@ This will build and run the application using Docker Compose.
 
 ## Routes
 
+- **Swagger**: http://localhost:3000/api/
+
 ### 1. `GET /pontos`
 
 - **Description**: Retrieves a list of all pontos.
