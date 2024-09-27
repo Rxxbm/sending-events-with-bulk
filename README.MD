@@ -4,6 +4,20 @@
 
 This document provides an overview of the software and explains the available routes.
 
+## Getting Started
+
+To use this project, ensure you have Docker installed on your machine. Follow these steps:
+
+1. Clone the repository to your local machine.
+2. Navigate to the project directory.
+3. Run the following command to start the application:
+
+   ```sh
+   docker-compose up
+   ```
+
+This will build and run the application using Docker Compose.
+
 ## Routes
 
 ### 1. `GET /pontos`
