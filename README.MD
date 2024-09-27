@@ -95,4 +95,6 @@ This will build and run the application using Docker Compose.
 ## Email Content
 
 - **Description**: If ponto is not closed in 5 seconds an email is received.
+- **Acess this url to view the email**: http://localhost:8025
+
   ![Email Notification](assets/email.png)
