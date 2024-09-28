@@ -51,15 +51,26 @@ export class AppService {
     await this.pontosQueue.add(
       'verificarPonto',
       { employeeId: ponto.employeeId },
-      { delay: 5000 },
+      { delay: 15 * 1000 },
     );
   }
 
   async close(employeeId: string) {
     const ponto = this.events.find((event) => event.employeeId === employeeId);
+
     if (ponto) {
       ponto.checkout = new Date();
     }
+
+    const jobs = await this.pontosQueue.getJobs(['delayed']);
+
+    jobs.forEach(async (job) => {
+      const { employeeId } = job.data;
+      if (employeeId === ponto.employeeId) {
+        await job.remove();
+      }
+    });
+
     return {
       message: `Ponto fechado para o funcionário ${employeeId}`,
       ponto: ponto,
@@ -73,7 +84,6 @@ export class AppService {
   }
 }
 
-@Injectable()
 @Processor('pontos')
 export class pontoProcessor {
   constructor(
@@ -92,7 +102,6 @@ export class pontoProcessor {
         from: 'funcionario@email.com',
       });
     }
-    console.log('Job data', job.data);
   }
 }
 

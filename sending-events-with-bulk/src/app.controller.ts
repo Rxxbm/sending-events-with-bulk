@@ -94,7 +94,7 @@ export class AppController {
   })
   @ApiResponse({ status: 200, description: 'Ponto closed' })
   @ApiResponse({ status: 404, description: 'Ponto not found' })
-  close(@Param('employeeId') employeeId: string) {
-    return this.appService.close(employeeId);
+  async close(@Param('employeeId') employeeId: string) {
+    return await this.appService.close(employeeId);
   }
 }

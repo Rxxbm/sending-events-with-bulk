@@ -2,7 +2,7 @@ POST http://localhost:3000/pontos
 Content-Type: application/json
 
 {
-  "employeeId": "rubinho_id"
+  "employeeId": "claudinho_id"
 }
 
 ###
@@ -18,4 +18,4 @@ GET http://localhost:3000/pontos/fernando_id
 
 ###
 
-PATCH http://localhost:3000/pontos/fernando_id
+PATCH http://localhost:3000/pontos/claudinho_id

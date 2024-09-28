@@ -45,7 +45,7 @@ This will build and run the application using Docker Compose.
 
 ### 2. `POST /pontos`
 
-- **Description**: Creates a new ponto and send a email to employee if ponto is not closed in 5 seconds.
+- **Description**: Creates a new ponto and send a email to employee if ponto is not closed in 10 seconds.
 - **Request Body**:
   ```json
   {
