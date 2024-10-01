@@ -10,8 +10,8 @@ export class MailService {
 
   constructor() {
     this.transporter = nodemailer.createTransport({
-      host: 'email',
-      port: 1025,
+      host: process.env.MAIL_HOST || 'email',
+      port: Number(process.env.MAIL_PORT) || 1025,
     });
   }
 
