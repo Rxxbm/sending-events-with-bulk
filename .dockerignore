@@ -1,0 +1,6 @@
+/assets
+docker-compose.yml
+README.MD
+requests.http
+**/node_modules/
+**/dist

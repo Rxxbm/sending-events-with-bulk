@@ -1,6 +1,6 @@
-FROM node:20-slim
+FROM node:20-alpine
 
-RUN apt-get update && apt-get install -y procps
+RUN apk update && apk add procps
 
 WORKDIR /home/node/app/sending-events-with-bulk
 
@@ -8,6 +8,8 @@ COPY ./sending-events-with-bulk/package*.json ./
 
 RUN npm install
 
-COPY . .
+COPY ./sending-events-with-bulk .
 
-CMD [ "npm", "run", "start:dev" ]
+RUN npm run build
+
+CMD [ "npm", "run", "start:prod" ]
